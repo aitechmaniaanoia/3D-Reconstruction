@@ -74,8 +74,8 @@ hold on;
 x2 = pts(:, 1);
 y2 = pts(:, 2);
 plot(x2, y2, 'ro', 'MarkerSize', 8, 'LineWidth', 3);
-coordsIM1 = [coordsIM1; x,y]
-coordsIM2 = [coordsIM2; x2, y2]
+coordsIM1 = [coordsIM1; x,y];
+coordsIM2 = [coordsIM2; x2, y2];
 
 end
 
