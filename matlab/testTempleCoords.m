@@ -3,6 +3,7 @@
 close all;
 clear all;
 
+K = load('../data/intrinsics.mat'); 
 S = load('../data/someCorresp.mat');
 I1 = imread('../data/im1.png');
 I2 = imread('../data/im2.png');
@@ -17,7 +18,11 @@ F = eightpoint(pts1, pts2, M);
 
 % epipolar Correspondence
 [pts2] = epipolarCorrespondence(I1, I2, F, pts1);
-[coordsIM1, coordsIM2] = epipolarMatchGUI(I1, I2, F);
+%[coordsIM1, coordsIM2] = epipolarMatchGUI(I1, I2, F);
+
+% essential matrix
+E = essentialMatrix(F, K.K1, K.K2);
+%[coordsIM1, coordsIM2] = epipolarMatchGUI(I1, I2, E);
 
 
 
