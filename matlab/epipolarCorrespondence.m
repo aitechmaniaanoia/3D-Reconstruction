@@ -29,13 +29,14 @@ pt_proj = round(cross(eline, test));
 im1_kernel = double(im1((pt1(1)-w):(pt1(1)+w), (pt1(2)-w):(pt1(2)+w)));
 best_e = 10000;
 
-kernel_size = 2*w + 1;
-gaussian_kernel = fspecial('gaussian', [kernel_size kernel_size], 5);
+%kernel_size = 2*w + 1;
+%gaussian_kernel = fspecial('gaussian', [kernel_size kernel_size], 5);
 
 for k = pt_proj(1)-20:pt_proj(1)+20
     for j = pt_proj(2)-20:pt_proj(2)+20 
         im2_kernel = double(im2(k-w:k+w,j-w:j+w));
-        e = norm(gaussian_kernel .*(im1_kernel - im2_kernel));
+        %e = norm(gaussian_kernel .*(im1_kernel - im2_kernel));
+        e = norm(abs(im1_kernel-im2_kernel));
         if e < best_e
             best_e = e;
             %pts2 = [pts2; k, j];
