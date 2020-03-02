@@ -17,8 +17,10 @@ F = eightpoint(pts1, pts2, M);
 % test 8 point
 %displayEpipolarF(I1, I2, F);
 
+T = load('../data/templeCoords.mat');
+
 % epipolar Correspondence
-%[pts2] = epipolarCorrespondence(I1, I2, F, pts1); 
+[pts2] = epipolarCorrespondence(I1, I2, F, T.pts1); 
 %[coordsIM1, coordsIM2] = epipolarMatchGUI(I1, I2, F);
 
 % essential matrix
@@ -34,7 +36,7 @@ min_neg_Z = 10000;
 for i = 1:size(P2_group,3)
     
     P2 = P2_group(:,:,i);
-    p3d = triangulate(K.K1*P1, pts1, K.K2*P2, pts2); % N*3
+    p3d = triangulate(K.K1*P1, T.pts1, K.K2*P2, pts2); % N*3
     
     % project the 3D points back to the image
     n = size(p3d,1);
@@ -43,7 +45,7 @@ for i = 1:size(P2_group,3)
     p2_proj = P2*p3d_;  % 3*N
     
     % compute the mean Euclidean error between projected 2D points and pts
-    err1 = norm(sqrt((p1_proj-[pts1 zeros(n,1)].').^2));
+    err1 = norm(sqrt((p1_proj-[T.pts1 zeros(n,1)].').^2));
     err2 = norm(sqrt((p2_proj-[pts2 zeros(n,1)].').^2));
     err = err1 + err2;
 
@@ -57,7 +59,7 @@ for i = 1:size(P2_group,3)
     end
 end
 
-plot3(pts3d(:,1), pts3d(:,2), pts3d(:,3),'.');
+plot3(pts3d(:,1), pts3d(:,2), pts3d(:,3),'.', 'MarkerSize',15);
 
 R1 = P1(:,1:3);
 R2 = P2_best(:,1:3);
