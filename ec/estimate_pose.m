@@ -4,22 +4,31 @@ function P = estimate_pose(x, X)
 
 n = size(x,2);
 A = [];
-b = [];
+%b = [];
 
 for i = 1:n
     pt_3d = X(:,i);
     pt_2d = x(:,i);
     
-    a1 = [pt_3d(1) pt_3d(2) pt_3d(3) 1 0 0 0 0 -pt_2d(1)*pt_3d(1) -pt_2d(1)*pt_3d(2) -pt_2d(1)*pt_3d(3)]; 
-    a2 = [0 0 0 0 pt_3d(1) pt_3d(2) pt_3d(3) 1 -pt_2d(2)*pt_3d(1) -pt_2d(2)*pt_3d(2) -pt_2d(2)*pt_3d(3)];
-    
-    A = [A; a1; a2];
-    
-    b = [b; pt_2d(1); pt_2d(1)];
+    a1 = [pt_3d(1) pt_3d(2) pt_3d(3) 1 0 0 0 0 -pt_2d(1)*pt_3d(1) -pt_2d(1)*pt_3d(2) -pt_2d(1)*pt_3d(3) -pt_2d(1)]; 
+    a2 = [0 0 0 0 pt_3d(1) pt_3d(2) pt_3d(3) 1 -pt_2d(2)*pt_3d(1) -pt_2d(2)*pt_3d(2) -pt_2d(2)*pt_3d(3) -pt_2d(2)];
+%     
+     A = [A; a1; a2];
+%     
+%     b = [b; pt_2d(1); pt_2d(1)];
+
 end
 
-P = A\b;
-P = [P;1];
+% P = A\b;
+% P = [P;1];
+% P = reshape(P,[],3)';
+
+[~,~,V] = svd(A);
+P = V(:,end);
+%P = [P;1];
+%P = reshape(P, [4,3]);
+%P = P';
 P = reshape(P,[],3)';
+%P = P/P(end,end);
 
 end

@@ -1,4 +1,4 @@
-function pts3d = triangulate(P1, pts1, P2, pts2 )
+function [pts3d, count] = triangulate(P1, pts1, P2, pts2 )
 % triangulate estimate the 3D positions of points from 2d correspondence
 %   Args:
 %       P1:     projection matrix with shape 3 x 4 for image 1
@@ -16,6 +16,10 @@ pts1 = [pts1 ones(n,1)].';
 pts2 = [pts2 ones(n,1)].';
 
 pts3d = zeros(4,n);
+
+mean_err1 = 0;
+mean_err2 = 0;
+count = 0;
 
 for i = 1:n
     pt1 = pts1(:,i);
@@ -43,10 +47,39 @@ for i = 1:n
     [~,~,V] = svd(A);
     z = V(:,end);
     pts3d(:,i) = z/z(4); % 4*N
+    
+    p1_proj = P1*pts3d(:,i);
+    p2_proj = P2*pts3d(:,i);
+    
+    if p1_proj(3) > 0
+        count = count + 1;
+    end
+    
+    if p2_proj(3) > 0
+        count = count + 1;
+    end
+    
+    p1_proj = p1_proj/p1_proj(3);
+    p2_proj = p2_proj/p2_proj(3);
+    
+    err1 = sqrt((p1_proj(1)-pts1(1,i)).^2 + (p1_proj(2)-pts1(2,i)).^2);
+    err2 = sqrt((p2_proj(1)-pts2(1,i)).^2 + (p2_proj(2)-pts2(2,i)).^2);
+    
+    mean_err1 = mean_err1 + err1;
+    mean_err2 = mean_err2 + err2;
+    
 end
+
+mean_err1 = mean_err1/n;
+mean_err2 = mean_err2/n;
 
 pts3d(4,:) = [];
 pts3d = pts3d'; % N*3
+
+fprintf('mean error for image1 : %.2f.\n', mean_err1);
+fprintf('mean error for image2 : %.2f.\n', mean_err2);
+fprintf('count of postive Z: %d.\n', count);
+
 end
 
 

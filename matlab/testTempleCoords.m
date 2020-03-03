@@ -20,7 +20,7 @@ F = eightpoint(pts1, pts2, M);
 T = load('../data/templeCoords.mat');
 
 % epipolar Correspondence
-[pts2] = epipolarCorrespondence(I1, I2, F, T.pts1); 
+[pts2] = epipolarCorrespondence(I1, I2, F, T.pts1); % 3.1.5
 %[coordsIM1, coordsIM2] = epipolarMatchGUI(I1, I2, F);
 
 % essential matrix
@@ -30,30 +30,30 @@ E = essentialMatrix(F, K.K1, K.K2); % 3*3
 %P1 = [E zeros(3,1)]; % 3*4
 P1 = [eye(3) zeros(3,1)];
 P2_group = camera2(E);
-err_best = 10000;
-min_neg_Z = 10000;
+%err_best = 10000;
+max_count = 0;
 
 for i = 1:size(P2_group,3)
     
     P2 = P2_group(:,:,i);
-    p3d = triangulate(K.K1*P1, T.pts1, K.K2*P2, pts2); % N*3
-    
+     [p3d, count] = triangulate(K.K1*P1, T.pts1, K.K2*P2, pts2); % N*3
+    %[p3d, count] = triangulate(K.K1*P1, pts1, K.K2*P2, pts2); % N*3
     % project the 3D points back to the image
-    n = size(p3d,1);
-    p3d_ = [p3d zeros(n,1)]'; % 4*N
-    p1_proj = P1*p3d_;  % 3*N
-    p2_proj = P2*p3d_;  % 3*N
-    
-    % compute the mean Euclidean error between projected 2D points and pts
-    err1 = norm(sqrt((p1_proj-[T.pts1 zeros(n,1)].').^2));
-    err2 = norm(sqrt((p2_proj-[pts2 zeros(n,1)].').^2));
-    err = err1 + err2;
+%     n = size(p3d,1);
+%     p3d_ = [p3d zeros(n,1)]'; % 4*N
+%     p1_proj = P1*p3d_;  % 3*N
+%     p2_proj = P2*p3d_;  % 3*N
+%     
+%     % compute the mean Euclidean error between projected 2D points and pts
+%     err1 = norm(sqrt((p1_proj-[T.pts1 zeros(n,1)].').^2));
+%     err2 = norm(sqrt((p2_proj-[pts2 zeros(n,1)].').^2));
+%     err = err1 + err2;
 
-    neg_Z = length(find(p3d(:,3) < 0));
+    % neg_Z = length(find(p3d(:,3) < 0));
     % find the best P2
-    if neg_Z < min_neg_Z
-        min_neg_Z = neg_Z;
-        err_best = err;
+    if count > max_count
+        max_count = count;
+        %err_best = err;
         P2_best = P2;
         pts3d = p3d;
     end
