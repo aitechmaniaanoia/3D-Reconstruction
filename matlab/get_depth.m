@@ -13,7 +13,7 @@ for y = 1:size(dispM,1)
         if dispM(y,x) == 0
             depthM(y,x) = 0;
         else
-            depthM(y,x) = b*(f/dispM(y,x));
+            depthM(y,x) = b*f/dispM(y,x);
         end
     end
 end

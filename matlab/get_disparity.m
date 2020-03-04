@@ -1,8 +1,8 @@
 function dispM = get_disparity(im1, im2, maxDisp, windowSize)
 % GET_DISPARITY creates a disparity map from a pair of rectified images im1 and
 %   im2, given the maximum disparity MAXDISP and the window size WINDOWSIZE.
-dispM = zeros(size(im1));
-w = (windowSize - 1)/2;
+%dispM = zeros(size(im1));
+%w = (windowSize - 1)/2;
 [y_max, x_max] = size(im1);
 
 window = ones(windowSize, windowSize);
@@ -24,7 +24,7 @@ for d = 1:maxDisp+1
     
 end
 
-[~,dispM] = min(dist_group,[],1); % max value
+[~,dispM] = min(dist_group,[],1); % min value
 dispM = reshape(dispM, [y_max, x_max]);
 
 % % add padding on image
